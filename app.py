@@ -96,7 +96,7 @@ if __name__ == '__main__':
         input_messages_key="message",
         history_messages_key="chat_history",
     )
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=8080)
 
 def shutdown_handler(signal_int: int, frame: FrameType) -> None:
     logger.info(f"Caught Signal {signal.strsignal(signal_int)}")
