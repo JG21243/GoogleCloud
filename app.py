@@ -4,9 +4,6 @@ import signal
 import sys
 from types import FrameType
 
-from flask import Flask
-
-from utils.logging import logge
 from flask import Flask, request, jsonify, render_template
 from langchain_openai import ChatOpenAI
 from langchain.memory import ChatMessageHistory
