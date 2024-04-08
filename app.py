@@ -1,5 +1,5 @@
 
-
+from utils.logging import logger
 import signal
 import sys
 from types import FrameType
