@@ -11,4 +11,4 @@ langchain-openai
 langchain_openai
 langchain-community
 openai
-langchainchainhub
+langchainhub
