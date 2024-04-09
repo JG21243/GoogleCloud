@@ -19,7 +19,7 @@ app = Flask(__name__, static_folder='./templates', static_url_path='')
 tavily_search_tool = Tool(
     name="tavily-search",
     description="Tool for searching the web with Tavily",
-    func=TavilySearchResults(max_results=1).invoke,
+    func=TavilySearchResults(max_results=5).invoke,
 )
 
 # Create an instance of the ChatOpenAI class
