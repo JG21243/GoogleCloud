@@ -1,183 +1,76 @@
-# Cloud Run Template Microservice
+# Cloud Run Template for Tavily Search Assistant API
 
-A template repository for a Cloud Run microservice, written in Python
+A template repository for a Cloud Run for a Tavily Search API, written in Python
 
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
+**Tavily Search Assistant**
+This repository contains a Flask web application that integrates with the Tavily Search API and OpenAI's language model to provide a conversational search assistant. The application allows users to interact with the assistant through a chat interface, where the assistant can perform web searches using the Tavily Search tool and provide relevant responses based on the user's queries.
 
-## Prerequisite
+**Features**
+Integration with Tavily Search API for web searching capabilities
+Utilization of OpenAI's language model for generating assistant responses
+Chat history management to maintain context across multiple user interactions
+Flask web server for handling API requests and serving the user interface
+Modularized HTML templates for a clean and maintainable frontend structure
 
-* Enable the Cloud Run API via the [console](https://console.cloud.google.com/apis/library/run.googleapis.com?_ga=2.124941642.1555267850.1615248624-203055525.1615245957) or CLI:
+**Prerequisites**
+Before running the application, ensure that you have the following dependencies installed:
+Python (version X.X.X)
+Flask (version 3.0.1)
+gunicorn (version 21.2.0)
+requests (version 2.31.0)
+structlog (version 24.1.0)
+google-auth (version 2.3.2)
+langchain
+tiktoken
+tavily-python
+langchain-openai
+langchain_openai
+langchain-community
+openai
+langchainhub
 
-```bash
-gcloud services enable run.googleapis.com
-```
+You can install the required Python packages by running the following command:
+bash
+pip install -r requirements.txt
 
-## Features
+Getting Started
 
-* **Flask**: Web server framework
-* **Buildpack support** Tooling to build production-ready container images from source code and without a Dockerfile
-* **Dockerfile**: Container build instructions, if needed to replace buildpack for custom build
-* **SIGTERM handler**: Catch termination signal for cleanup before Cloud Run stops the container
-* **Service metadata**: Access service metadata, project ID and region, at runtime
-* **Local development utilities**: Auto-restart with changes and prettify logs
-* **Structured logging w/ Log Correlation** JSON formatted logger, parsable by Cloud Logging, with [automatic correlation of container logs to a request log](https://cloud.google.com/run/docs/logging#correlate-logs).
-* **Unit and System tests**: Basic unit and system tests setup for the microservice
-* **Task definition and execution**: Uses [invoke](http://www.pyinvoke.org/) to execute defined tasks in `tasks.py`.
+Clone the repository:
+bash
+git clone https://github.com/your-username/tavily-search-assistant.git
+cd tavily-search-assistant
 
-## Local Development
+Set up the necessary environment variables:
 
-### Cloud Code
+OPENAI_API_KEY: Your OpenAI API key
+TAVILY_API_KEY: Your Tavily Search API key
 
-This template works with [Cloud Code](https://cloud.google.com/code), an IDE extension
-to let you rapidly iterate, debug, and run code on Kubernetes and Cloud Run.
+Run the Flask application:
 
-Learn how to use Cloud Code for:
+bash
+python app.py
 
-* Local development - [VSCode](https://cloud.google.com/code/docs/vscode/developing-a-cloud-run-service), [IntelliJ](https://cloud.google.com/code/docs/intellij/developing-a-cloud-run-service)
+Access the application in your web browser at http://localhost:8080.
 
-* Local debugging - [VSCode](https://cloud.google.com/code/docs/vscode/debugging-a-cloud-run-service), [IntelliJ](https://cloud.google.com/code/docs/intellij/debugging-a-cloud-run-service)
+**Usage**
+Enter your query or message in the chat interface.
+The assistant will process your input and generate a response using the Tavily Search tool and OpenAI's language model.
+The chat history will be maintained, allowing the assistant to provide context-aware responses.
 
-* Deploying a Cloud Run service - [VSCode](https://cloud.google.com/code/docs/vscode/deploying-a-cloud-run-service), [IntelliJ](https://cloud.google.com/code/docs/intellij/deploying-a-cloud-run-service)
-* Creating a new application from a custom template (`.template/templates.json` allows for use as an app template) - [VSCode](https://cloud.google.com/code/docs/vscode/create-app-from-custom-template), [IntelliJ](https://cloud.google.com/code/docs/intellij/create-app-from-custom-template)
+**API Endpoints**
+POST /api/chat: Accepts a JSON payload with the user's message and returns the assistant's response.
 
-### CLI tooling
+**File Structure**
+app.py: The main Flask application file containing the server-side logic.
+templates/: Directory containing HTML templates for the user interface.
+index.html: The main page template.
+main_content.html: The modularized template for the main content section.
+utils/: Directory containing utility modules.
+logging.py: Logging utility functions.
+requirements.txt: File listing the required Python dependencies.
 
-To run the `invoke` commands below, install [`invoke`](https://www.pyinvoke.org/index.html) system wide: 
+**Contributing**
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+**License**
+This project is licensed under the MIT License.
 
-```bash
-pip install invoke
-```
-
-Invoke will handle establishing local virtual environments, etc. Task definitions can be found in `tasks.py`.
-
-#### Local development
-
-1. Set Project Id:
-    ```bash
-    export GOOGLE_CLOUD_PROJECT=<GCP_PROJECT_ID>
-    ```
-2. Start the server with hot reload:
-    ```bash
-    invoke dev
-    ```
-
-#### Deploying a Cloud Run service
-
-1. Set Project Id:
-    ```bash
-    export GOOGLE_CLOUD_PROJECT=<GCP_PROJECT_ID>
-    ```
-
-1. Enable the Artifact Registry API:
-    ```bash
-    gcloud services enable artifactregistry.googleapis.com
-    ```
-
-1. Create an Artifact Registry repo:
-    ```bash
-    export REPOSITORY="samples"
-    export REGION=us-central1
-    gcloud artifacts repositories create $REPOSITORY --location $REGION --repository-format "docker"
-    ```
-  
-1. Use the gcloud credential helper to authorize Docker to push to your Artifact Registry:
-    ```bash
-    gcloud auth configure-docker
-    ```
-
-2. Build the container using a buildpack:
-    ```bash
-    invoke build
-    ```
-3. Deploy to Cloud Run:
-    ```bash
-    invoke deploy
-    ```
-
-### Run sample tests
-
-1. [Pass credentials via `GOOGLE_APPLICATION_CREDENTIALS` env var](https://cloud.google.com/docs/authentication/production#passing_variable):
-    ```bash
-    export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
-    ```
-
-2. Set Project Id:
-    ```bash
-    export GOOGLE_CLOUD_PROJECT=<GCP_PROJECT_ID>
-    ```
-3. Run unit tests
-    ```bash
-    invoke test
-    ```
-
-4. Run system tests
-    ```bash
-    gcloud builds submit \
-        --config test/advance.cloudbuild.yaml \
-        --substitutions 'COMMIT_SHA=manual,REPO_NAME=manual'
-    ```
-    The Cloud Build configuration file will build and deploy the containerized service
-    to Cloud Run, run tests managed by pytest, then clean up testing resources. This configuration restricts public
-    access to the test service. Therefore, service accounts need to have the permission to issue ID tokens for request authorization:
-    * Enable Cloud Run, Cloud Build, Artifact Registry, and IAM APIs:
-        ```bash
-        gcloud services enable run.googleapis.com cloudbuild.googleapis.com iamcredentials.googleapis.com artifactregistry.googleapis.com
-        ```
-        
-    * Set environment variables.
-        ```bash
-        export PROJECT_ID="$(gcloud config get-value project)"
-        export PROJECT_NUMBER="$(gcloud projects describe $(gcloud config get-value project) --format='value(projectNumber)')"
-        ```
-
-    * Create an Artifact Registry repo (or use another already created repo):
-        ```bash
-        export REPOSITORY="samples"
-        export REGION=us-central1
-        gcloud artifacts repositories create $REPOSITORY --location $REGION --repository-format "docker"
-        ```
-  
-    * Create service account `token-creator` with `Service Account Token Creator` and `Cloud Run Invoker` roles.
-        ```bash
-        gcloud iam service-accounts create token-creator
-
-        gcloud projects add-iam-policy-binding $PROJECT_ID \
-            --member="serviceAccount:token-creator@$PROJECT_ID.iam.gserviceaccount.com" \
-            --role="roles/iam.serviceAccountTokenCreator"
-        gcloud projects add-iam-policy-binding $PROJECT_ID \
-            --member="serviceAccount:token-creator@$PROJECT_ID.iam.gserviceaccount.com" \
-            --role="roles/run.invoker"
-        ```
-
-    * Add `Service Account Token Creator` role to the Cloud Build service account.
-        ```bash
-        gcloud projects add-iam-policy-binding $PROJECT_ID \
-            --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
-            --role="roles/iam.serviceAccountTokenCreator"
-        ```
-    
-    * Cloud Build also requires permission to deploy Cloud Run services and administer artifacts: 
-
-        ```bash
-        gcloud projects add-iam-policy-binding $PROJECT_ID \
-            --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
-            --role="roles/run.admin"
-        gcloud projects add-iam-policy-binding $PROJECT_ID \
-            --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
-            --role="roles/iam.serviceAccountUser"
-        gcloud projects add-iam-policy-binding $PROJECT_ID \
-            --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
-            --role="roles/artifactregistry.repoAdmin"
-        ```
-
-## Maintenance & Support
-
-This repo performs basic periodic testing for maintenance. Please use the issue tracker for bug reports, features requests and submitting pull requests.
-
-## Contributions
-
-Please see the [contributing guidelines](CONTRIBUTING.md)
-
-## License
-
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE).
